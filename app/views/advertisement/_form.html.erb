@@ -1,0 +1,30 @@
+<table width="100%">
+  <tfoot>
+    <tr>
+      <td></td>
+      <td><%= submit_tag "Submit" %></td>
+    </tr>
+  </tfoot>
+  <tbody>
+    <tr>
+      <th width="15%"><label for="ad_file">File</label></th>
+      <td width="85%"><%= file_field "ad", "file" %></td>
+    </tr>
+    <tr>
+      <th><label for="ad_referral_url">Referral URL</label></th>
+      <td><%= text_field "ad", "referral_url" %></td>
+    </tr>
+    <tr>
+      <th><label for="ad_ad_type">Ad Type</label></th>
+      <td><%= select "ad", "ad_type", ["vertical", "horizontal"] %></td>
+    </tr>
+    <tr>
+      <th><label for="ad_status">Status</label></th>
+      <td><%= select "ad", "status", ["active", "inactive"] %></td>
+    </tr>
+    <tr>
+      <th><label for="ad_is_work_safe">Work Safe</label></th>
+      <td><%= check_box "ad", "is_work_safe" %></td>
+    </tr>
+  </tbody>
+</table>

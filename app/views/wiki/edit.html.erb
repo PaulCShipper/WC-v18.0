@@ -1,0 +1,17 @@
+<%= render :partial => "sidebar" %>
+
+<div class="content" style="float: left; width: 40em;">
+  <h2 class="wiki-title"><%= h(@wiki_page.pretty_title) %> (Editing)</h2>
+  <div id="wiki-view">
+  </div>
+  <% form_tag(:action => "update") do %>
+    <%= hidden_field "wiki_page", "title", :value => @wiki_page.title %>
+    <%= render :partial => 'edit_buttons' %>
+  <% end %>
+</div>
+
+<div style="float: left; margin-left: 5em; width: 15em;">
+  <%= render :partial => "static/dtext_reference" %>
+</div>
+
+<%= render :partial => "footer" %>

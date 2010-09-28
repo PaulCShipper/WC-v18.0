@@ -1,0 +1,57 @@
+<% @pools.each do |pool| %>
+  <%= render :partial => "post/show_partials/pool", :locals => {:pool => pool, :pool_post => PoolPost.find(:first, :conditions => ["pool_id = ? AND post_id = ?", pool.id, @post.id])} %>
+<% end %>
+
+<% if (!@post.is_deleted? || @current_user.is_janitor_or_higher?) && @post.use_sample?(@current_user) && @post.can_be_seen_by?(@current_user) %>
+  <div class="status-notice" style="display: none;" id="resized_notice">
+    This image is displayed at <%= number_to_percentage @post.sample_percentage, :precision => 0 %> of its original size. <%= link_to_function "View original", "Post.highres()" %>
+    <% unless @current_user.is_anonymous? || CONFIG["force_image_samples"] %>
+      | <%= link_to_function "Always view original", "User.disable_samples()" %>
+      | <%= link_to_function "Hide this message", "$('resized_notice').hide(); Cookie.put('hide_resized_notice', '1')" %>
+      <script type="text/javascript">
+        if (Cookie.get("hide_resized_notice") != "1") {
+          $("resized_notice").show()
+        }
+      </script>
+    <% end %>
+  </div>
+  <div class="status-notice" style="display: none;" id="samples_disabled">
+    Image samples have been disabled. If you find this to be too slow, you can turn samples back on in your profile settings.
+  </div>
+<% end %>
+
+<% if @post.parent_id %>
+  <div class="status-notice">
+    This post belongs to a <%= fast_link_to "parent post", :action => "show", :id => @post.parent_id %>. Child posts are often minor variations of the parent post (<%= fast_link_to "learn more", :controller => "help", :action => "post_relationships" %>).
+  </div>
+<% end %>
+
+<% if @post.has_children? %>
+  <div class="status-notice">
+    This post has <%= fast_link_to "child posts", :action => "index", :tags => "parent:#{@post.id}" %>. Child posts are often minor variations of the parent post (<%= fast_link_to "learn more", :controller => "help", :action => "post_relationships" %>).
+  </div>
+<% end %>
+
+<% if @post.is_pending? %>
+  <div class="status-notice" id="pending-notice">
+    This post is pending moderator approval.
+    <%= render :partial => "post/show_partials/moderation_panel" %>
+  </div>
+<% elsif @post.is_deleted? %>
+  <div class="status-notice">
+    This post was deleted. 
+    <% if @post.flag_detail %>
+      Reason: <%= h @post.flag_detail.reason %>. MD5: <%= @post.md5 %>. By: <%= h @post.flag_detail.user.name %>.
+    <% end %>
+  </div>
+<% elsif @post.is_flagged? %>
+  <div class="status-notice">
+    This post was flagged for deletion. 
+    <% if @post.flag_detail %>
+      Reason: <%= h @post.flag_detail.reason %>. By: <%= h @post.flag_detail.user.name %>.
+    <% end %>    
+
+    <%= render :partial => "post/show_partials/moderation_panel" %>
+  </div>
+<% end %>
+

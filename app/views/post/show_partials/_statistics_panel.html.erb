@@ -1,0 +1,30 @@
+<div id="stats">
+  <h5>Statistics</h5>
+  <ul>
+    <li>Id: <%= @post.id %></li>
+    <li>Posted: <%= fast_link_to time_ago_in_words(@post.created_at) + " ago", {:action => "index", :tags => "date:" + @post.created_at.strftime("%Y-%m-%d")}, :title => @post.created_at.strftime("%Y-%m-%d %H:%M") %> by <%= fast_link_to_unless @post.user_id.nil?, h(@post.author), :controller => "user", :action => "show", :id => @post.user_id %></li>
+    <% if @post.approver %>
+      <li>Approver: <%= link_to @post.approver.name, :controller => "user", :action => "show", :id => @post.approver_id %></li>
+    <% end %>
+    <% if @post.image? %>
+      <li>Size: <%= link_to "#{@post.width}x#{@post.height} (#{number_to_human_size(@post.file_size)})", @post.file_url, :id => "highres", :onclick => "Post.highres(); return false" %></li>
+    <% end %>
+    <% unless @post.source.blank? %>
+      <% if @post.source[/^http/] %>
+        <li>Source: <%= fast_link_to h(@post.source[7, 20].to_s + "..."), @post.normalized_source, :target => "_blank" %></li>
+      <% else %>
+        <li>Source: <%= h @post.source %></li>
+      <% end %>
+    <% end %>
+    <li>Rating: <%= @post.pretty_rating %></li>
+    <li>
+      Score: <span id="post-score-<%= @post.id %>"><%= @post.score %></span> 
+      <% if @current_user.is_privileged_or_higher? %>
+        (vote <%= link_to_function "up", "Post.vote(1, #{@post.id})" %>/<%= link_to_function "down", "Post.vote(-1, #{@post.id})" %>)
+      <% end %>
+    </li>
+    <% if @current_user.is_privileged_or_higher? %>
+      <li>Favorited by: <span id="favorited-by"><%= favorite_list(@post) %></span></li>
+    <% end %>
+  </ul>
+</div>

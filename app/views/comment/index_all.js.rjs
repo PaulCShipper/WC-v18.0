@@ -1,0 +1,2 @@
+page.replace_html("response-list-for-#{params[:post_id]}", :partial => "comment", :collection => @comments)
+page.hide("threshold-comments-notice-for-#{params[:post_id]}")

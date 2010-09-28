@@ -1,0 +1,5 @@
+monet:
+  id: 1
+  name: money
+  updated_at: <%= Time.now %>
+  updater_id: 1

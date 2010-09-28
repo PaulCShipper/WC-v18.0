@@ -1,0 +1,51 @@
+<div id="post-view">
+  <% if @post.nil? %>
+    <h2>Nobody here but us chickens!</h2>
+  <% else %>
+    <%= render :partial => "post/show_partials/status_notices" %>
+
+    <div class="sidebar">
+      <%= render :partial => "search" %>
+      <%= print_advertisement("vertical") %>
+      <h5>Tags</h5>
+      <%= print_tag_sidebar(@post) %>
+      <%= render :partial => "post/show_partials/statistics_panel" %>
+      <%= render :partial => "post/show_partials/options_panel" %>
+      <%= render :partial => "post/show_partials/history_panel" %>
+      <%= render :partial => "post/show_partials/related_posts_panel" %>
+    </div>
+    <div class="content" id="right-col" <% if false && CONFIG["can_see_ads"].call(@current_user) %>style="width: 60%;"<% end %>>
+      <%= print_advertisement("horizontal") %>
+      <%= render :partial => "post/show_partials/image" %>      
+      <%= render :partial => "post/show_partials/image_footer" %>
+      <%= render :partial => "post/show_partials/edit" %>
+      <%= render :partial => "post/show_partials/comments" %>
+    </div>
+    <% if false && CONFIG["can_see_ads"].call(@current_user) %>
+      <%= render :partial => "static/jlist_rss_ads" %>
+    <% end %>
+
+    <% content_for("post_cookie_javascripts") do %>
+      <script type="text/javascript">
+        Post.observe_text_area("post_tags")
+      
+        <% if @post && @current_user.is_privileged_or_higher? %>
+          var favorited_by = <%= @post.favorited_by_hash.map {|x| x["name"]}.to_json %>
+          if (favorited_by.include(Cookie.get("login"))) {
+            $("add-to-favs").hide()
+          } else {
+            $("remove-from-favs").hide()
+          }
+        <% end %>
+
+        RelatedTags.init(<%= @current_user.uploaded_tags_with_types.to_json %>, <%= @current_user.recent_tags_with_types.to_json %>)
+
+        <% if @current_user.always_resize_images? %>
+          Post.resize_image()
+        <% end %>
+      </script>
+    <% end %>
+  <% end %>
+</div>
+
+<%= render :partial => "footer" %>
