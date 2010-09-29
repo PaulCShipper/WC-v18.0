@@ -1,0 +1,14 @@
+.bundle
+lib/danbooru_image_resizer/*.so
+lib/danbooru_image_resizer/*.o
+lib/danbooru_image_resizer/*.bundle
+lib/danbooru_image_resizer/*.log
+db/*.sqlite3
+log/*.log
+tmp/**/*
+public/data/preview/*.*
+public/data/*.*
+public/data/sample/*
+vendor/cache/*.gem
+!public/data/preview/download.png
+!public/data/preview/deleted.png
