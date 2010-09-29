@@ -1,3 +1,4 @@
+# default ignore
 .bundle
 lib/danbooru_image_resizer/*.so
 lib/danbooru_image_resizer/*.o
@@ -10,5 +11,13 @@ public/data/preview/*.*
 public/data/*.*
 public/data/sample/*
 vendor/cache/*.gem
+
+# what I don't want to ignore
 !public/data/preview/download.png
 !public/data/preview/deleted.png
+
+# stuff I'm ignoring
+config/local_config.rb
+lib/danbooru_image_resizer/Makefile
+config/database.yml
+log/*.*

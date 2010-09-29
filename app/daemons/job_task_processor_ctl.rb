@@ -2,6 +2,7 @@
 
 require 'rubygems'
 require 'daemons'
+require 'yaml'
 begin
   require 'pg'
 rescue LoadError => e

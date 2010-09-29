@@ -89,13 +89,19 @@ CREATE FUNCTION trg_posts_tags__insert() RETURNS trigger
 --
 -- Name: danbooru; Type: TEXT SEARCH CONFIGURATION; Schema: public; Owner: -
 --
+/* This cause an error
 
 CREATE TEXT SEARCH CONFIGURATION danbooru (
     PARSER = testparser );
 
 ALTER TEXT SEARCH CONFIGURATION danbooru
     ADD MAPPING FOR word WITH simple;
+*/
 
+-- to create text search config
+
+CREATE TEXT SEARCH CONFIGURATION 
+    public.danbooru (COPY=pg_catalog.english );
 
 SET default_tablespace = '';
 

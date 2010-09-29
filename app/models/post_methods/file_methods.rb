@@ -13,7 +13,7 @@ module PostMethods
       m.before_validation_on_create :generate_sample
       m.before_validation_on_create :generate_preview
       m.before_validation_on_create :move_file
-      m.before_validation_on_create :distribute_file      
+      # m.before_validation_on_create :distribute_file # <- to allow uploading
     end
     
     def distribute_file
