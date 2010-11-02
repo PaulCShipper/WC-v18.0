@@ -47,15 +47,22 @@ class AdminController < ApplicationController
 
   def edit_avatar
     if request.post?
-      user = params[:user][:name]
-      @user = User.find_by_name(user)
-      
+      @user = User.find_by_name(params[:user][:name])
+
       if @user
         @avatars = @user.avatars
       else
         flash[:notice] = "That account does not exist"
         redirect_to :action => "edit_avatar"
       end 
+    elsif params[:id]
+      @user = User.find_by_id(params[:id])
+      if @user
+        @avatars = @user.avatars
+      else
+        flash[:notice] = "That account does not exist"
+        redirect_to :action => "edit_avatar"
+      end
     else
       @user = User.new
     end

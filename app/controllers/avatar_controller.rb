@@ -48,4 +48,3 @@ class AvatarController < ApplicationController
     redirect_to :controller => "admin", :action => "edit_avatar", :id => avatar.user.id
   end
 end
-

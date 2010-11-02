@@ -20,7 +20,7 @@ class Avatar < ActiveRecord::Base
     limit = CONFIG["member_avatar_limit"]
 
     if count >= limit
-      errors.add :beyond, "your allow number of avatars"
+      errors.add :beyond, "your allowed number of avatars"
       return false
     end
   end
