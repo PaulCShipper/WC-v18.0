@@ -1,6 +1,5 @@
 class BannedIpController < ApplicationController
   before_filter :admin_only
-  layout "default"
   
   def search_users
     if params[:user_ids]

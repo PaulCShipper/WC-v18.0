@@ -18,6 +18,7 @@
     <div class="section">
       <ul class="link-page">
         <li><%= link_to "&raquo; Logout", :action => "logout" %></li>
+        <li><%= link_to "&raquo; My Avatar", :action => "avatar", :id => @current_user.id  %></lid>
         <li><%= link_to "&raquo; My Profile", :action => "show", :id => @current_user.id %></li>
         <li><%= link_to "&raquo; My Mail", :controller => "dmail", :action => "inbox" %></li>
         <li><%= link_to "&raquo; My Favorites", :controller => "post", :action => "index", :tags => "fav:#{@current_user.name}" %></li>

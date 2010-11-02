@@ -1,0 +1,22 @@
+To do list, or things to get back to
+
+Avatar:
+  fix edit_avatar so the browser will remain on the page
+  Make an easier way to set default for avatars
+  
+  important: fix the limit
+  
+Pool:
+  Compress pools so the first post will appear and the others are hidden
+  Include all the tags on the first pool post
+  incorporate the tag method instead of working around it
+
+Themes:
+  create theme table
+
+Post:
+  create an easy way to make pools and upload zip files.
+  
+
+User:
+  create a point system that rewards users based on what they do with the site.

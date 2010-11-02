@@ -1,5 +1,4 @@
 class PostTagHistoryController < ApplicationController
-  layout 'default'
   before_filter :member_only, :only => [:revert, :undo]
   verify :method => :post, :only => [:undo]
   

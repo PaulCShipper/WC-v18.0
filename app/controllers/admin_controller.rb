@@ -1,6 +1,6 @@
 class AdminController < ApplicationController
-  layout "default"
   before_filter :admin_only
+  helper :avatar
 
   def index
     set_title "Admin"
@@ -40,6 +40,22 @@ class AdminController < ApplicationController
         flash[:notice] = "That account does not exist"
         redirect_to :action => "reset_password"
       end
+    else
+      @user = User.new
+    end
+  end
+
+  def edit_avatar
+    if request.post?
+      user = params[:user][:name]
+      @user = User.find_by_name(user)
+      
+      if @user
+        @avatars = @user.avatars
+      else
+        flash[:notice] = "That account does not exist"
+        redirect_to :action => "edit_avatar"
+      end 
     else
       @user = User.new
     end

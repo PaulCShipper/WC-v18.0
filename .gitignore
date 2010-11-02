@@ -21,3 +21,4 @@ config/local_config.rb
 lib/danbooru_image_resizer/Makefile
 config/database.yml
 log/*.*
+public/avatars/*.*

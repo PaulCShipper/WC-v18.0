@@ -1,10 +1,11 @@
 class CommentController < ApplicationController
-  layout "default"
 
   verify :method => :post, :only => [:create, :destroy, :update, :vote]
   verify :xhr => true, :only => [:preview, :index_hidden, :index_all, :vote]
   before_filter :member_only, :only => [:create, :destroy, :update, :show, :vote]
   before_filter :contributor_only, :only => [:moderate]
+
+  helper :avatar
 
   def edit
     @comment = Comment.find(params[:id])
@@ -40,6 +41,7 @@ class CommentController < ApplicationController
     comment.user_id = @current_user.id
     comment.score = 0
     comment.ip_addr = request.remote_ip
+    comment.avatar_id = @current_user.avatar_id unless comment.avatar_id
 
     if params[:commit] == "Post without bumping"
       comment.do_not_bump_post = true

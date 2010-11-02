@@ -1,0 +1,14 @@
+<%- form_tag({:controller => "avatar", :action => "update", :id => @avatar.id}) do -%>
+<table>
+    <tr>
+      <td><%= show_avatar(@avatar, :label => true) %></td>
+      <td>
+        <%= label_tag(:label, "Keyword:") %> <br>
+        <%= text_field_tag(:label, @avatar.label) %><br>
+        <%= label_tag(:default, "Default: ") %> <%= check_box_tag(:default) %><br>
+        <br>
+        <%= submit_tag("Update") %>
+      </td>
+    </tr>
+</table>
+<%- end -%>

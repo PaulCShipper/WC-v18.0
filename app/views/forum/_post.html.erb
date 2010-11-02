@@ -1,7 +1,8 @@
 <div class="comment">
   <div class="author">
     <h6 class="author"><%= link_to h(post.author.tr("_", " ")), :controller => "user", :action => "show", :id => post.creator_id %></h6>
-    <span class="date"><%= link_to time_ago_in_words(post.created_at) + " ago", :action => "show", :id => post.id %></span>
+    <span class="date"><%= link_to time_ago_in_words(post.created_at) + " ago", :action => "show", :id => post.id %></span><br>
+    <%= get_avatar(post.avatar_id) %>
   </div>
   <div class="content">
     <% if post.is_parent? %>

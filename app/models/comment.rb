@@ -4,6 +4,7 @@ class Comment < ActiveRecord::Base
   validates_format_of :body, :with => /\S/, :message => 'has no content'
   belongs_to :post
   belongs_to :user
+  has_one :avatar
   has_many :votes, :class_name => "CommentVote"
   after_save :update_last_commented_at
   after_destroy :update_last_commented_at

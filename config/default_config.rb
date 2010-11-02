@@ -59,6 +59,9 @@ CONFIG["comment_threshold"] = 40
 # Members cannot post more than X comments in an hour.
 CONFIG["member_comment_limit"] = 2
 
+# Member cannot create more t han X avatars at a time
+CONFIG["member_avatar_limit"] = 5
+
 # Defines the various user levels. You should not remove any of the default ones. When Danbooru starts up, the User model will have several methods automatically defined based on what this config contains. For this reason you should only use letters, numbers, and spaces (spaces will be replaced with underscores). Example: is_member?, is_member_or_lower?, is_member_or_higher?
 CONFIG["user_levels"] = {
   "Unactivated" => 0,
@@ -71,6 +74,16 @@ CONFIG["user_levels"] = {
   "Mod" => 40,
   "Admin" => 50
 }
+
+# Define base level for staff members
+CONFIG["staff"] = lambda do |user|
+  
+  # janitors are the lowest staff member
+  return true if user.is_janitor_or_higher?
+
+  # else is false
+  return false
+end
 
 # Defines the various tag types. You can also define shortcuts.
 CONFIG["tag_types"] = {

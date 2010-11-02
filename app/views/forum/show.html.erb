@@ -26,6 +26,7 @@
         <% form_tag({:action => "create"}) do %>
           <%= hidden_field "forum_post", "title", :value => "" %>
           <%= hidden_field "forum_post", "parent_id", :value => @forum_post.root_id %>
+          <%= select_avatar("forum_post") %>
           <%= text_area "forum_post", "body", :rows => 10, :cols => 60, :value => "" %>
           <%= submit_tag "Post" %>
           <%= submit_to_remote "preview", "Preview", :url => {:action => "preview"}, :method => :get, :update => "preview", :success => "$('preview').show()" %>

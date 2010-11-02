@@ -6,7 +6,8 @@
       <% else %>
         <h6><%= h User.find_name(comment.user_id) %></h6>
       <% end %>
-      <span class="date" title="Posted at <%= comment.created_at.strftime('%c') %>"><%= time_ago_in_words(comment.created_at) %> ago</span>
+      <span class="date" title="Posted at <%= comment.created_at.strftime('%c') %>"><%= time_ago_in_words(comment.created_at) %> ago</span><br>
+      <%= get_avatar(comment.avatar_id) %>
     </div>
     <div class="content">
       <div class="body">

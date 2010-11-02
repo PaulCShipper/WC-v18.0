@@ -1,6 +1,5 @@
 class AdvertisementController < ApplicationController
-	before_filter :janitor_only, :only => [:create, :update, :new, :edit]
-  layout "default"
+  before_filter :janitor_only, :only => [:create, :update, :new, :edit]
 
 	def redirect_ad
 		ad = Advertisement.find(params[:id])

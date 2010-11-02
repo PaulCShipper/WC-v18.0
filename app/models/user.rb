@@ -26,6 +26,7 @@ class User < ActiveRecord::Base
   has_one :test_janitor
   has_many :favorites
   has_many :user_records
+  has_many :avatars, :order => "id"
   
   @salt = CONFIG["user_password_salt"]
   
@@ -42,4 +43,3 @@ class User < ActiveRecord::Base
     self.show_samples = true
   end
 end
-

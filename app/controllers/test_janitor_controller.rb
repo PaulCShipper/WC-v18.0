@@ -1,6 +1,5 @@
 class TestJanitorController < ApplicationController
   before_filter :admin_only
-  layout "default"
   
   def index
     @users = User.all(:conditions => "level = 34", :order => "name")

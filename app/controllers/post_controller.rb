@@ -10,7 +10,7 @@ class PostController < ApplicationController
   after_filter :save_recent_tags, :only => [:update, :create]  
   # around_filter :cache_action, :only => [:index, :atom, :piclens]
 
-  helper :wiki, :tag, :comment, :pool, :favorite, :advertisement
+  helper :wiki, :tag, :comment, :pool, :favorite, :advertisement, :avatar
 
 protected
   def verify_action(options)

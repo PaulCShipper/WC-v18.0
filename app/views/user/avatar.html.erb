@@ -1,0 +1,36 @@
+<%- if @user == @current_user -%>
+  <% form_tag({:controller => "avatar", :action => "create"}, :multipart => true, :id => "edit-form") do %>
+    <table>
+      <tfoot>
+        <tr>
+          <td colspan=2>
+            <%= submit_tag "Upload", :tabindex => 8, :accesskey => "s" %>
+          </td>
+        </tr>
+      </tfoot>
+      <tbody>
+        <tr>
+          <th>File</th>
+          <td>
+            <%= file_field "avatar", "file", :size => 50, :tabindex => 1 %>
+          </td>
+        </tr>
+        <tr>
+          <th>Label</th>
+          <td>
+            <%= text_field "avatar", "label",:size => 50, :tabindex => 2 %>
+          </td>
+      </tbody>
+    </table>
+  <% end %>
+<%- end -%>
+
+<%- if @current_user == @user -%>
+  <%- @avatars.each do |a| -%>
+    <%= link_avatar(a, {:controller => "avatar", :action => "edit", :id => a.id} ,{:label => "true", :default => "true"}) %>  &nbsp;
+  <%- end -%>
+<%- else -%>
+  <%- @avatars.each do |a| -%>
+    <%= show_avatar(a, {:label => "true"}) %>  &nbsp;
+  <%- end -%>
+<%- end -%>

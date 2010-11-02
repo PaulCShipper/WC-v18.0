@@ -1,4 +1,6 @@
 class PixivController < ApplicationController
+  layout nil
+
 	def upload_info
 		@results = PixivProxy.get(params[:url])
 		@artist = Artist.find_by_name(@results[:artist].downcase) if @results[:artist]

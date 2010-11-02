@@ -92,6 +92,7 @@
       <li><%= link_to("Logout",{:controller=>"user",:action=>"logout"}) %></li>
       <% unless @current_user.nil? %>
         <li><%= link_to("My Profile",{:controller=>"user",:action=>"show",:id=>@current_user.id}) %></li>
+        <li><%= link_to("My Avatar",{:controller=>"user",:action=>"avatar",:id=>@current_user.id}) %></li>
       <% end %>
       <li><%= link_to("Records",{:controller=>"user_record",:action=>"index"}) %></li>
       <li><%= link_to("Reset Password",{:controller=>"user",:action=>"reset_password"}) %></li>
@@ -103,6 +104,7 @@
       <ul>
         <li><h4>Admin</h4></li>
         <li><%= link_to("Edit User", { :controller => "admin", :action => "edit_user" }) %></li>   
+        <li><%= link_to("Edit Avatar", { :controller => "admin", :action => "edit_avatar" }) %></li>
         <li><%= link_to("Reset Password", { :controller => "admin", :action => "reset_password" }) %></li>
         <li><%= link_to("Test Janitors", { :controller => "test_janitor", :action => "index" }) %></li>
         <li><%= link_to("Banned IP Addresses", {:controller => "banned_ip", :action => "index"}) %></li>

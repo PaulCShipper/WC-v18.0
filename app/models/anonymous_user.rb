@@ -1,5 +1,6 @@
 # This is a proxy class to make various nil checks unnecessary
 class AnonymousUser
+
   def id
     nil
   end

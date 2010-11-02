@@ -1,5 +1,4 @@
 class WikiController < ApplicationController
-  layout 'default'
   before_filter :member_only, :only => [:update, :create, :edit, :revert]
   before_filter :mod_only, :only => [:lock, :unlock, :destroy, :rename]
   before_filter :verify_user_is_not_banned, :only => [:update, :create, :revert]

@@ -1,16 +1,17 @@
 require 'digest/sha2'
 
 class UserController < ApplicationController
-  layout "default"
   verify :method => :post, :only => [:authenticate, :update, :create]
   before_filter :blocked_only, :only => [:authenticate, :update, :edit]
-  before_filter :member_only, :only => [:show]
+  before_filter :member_only, :only => [:show, :avatar]
   before_filter :janitor_only, :only => [:invites, :revert_tag_changes]
   before_filter :mod_only, :only => [:block, :unblock, :show_blocked_users]
   before_filter :admin_only, :only => [:edit_upload_limit, :update_upload_limit]
   helper :post, :tag_subscription
   filter_parameter_logging :password
   auto_complete_for :user, :name
+
+  helper :avatar
 
   protected
   def save_cookies(user)
@@ -292,5 +293,10 @@ class UserController < ApplicationController
 
       redirect_to :action => "home"
     end
+  end
+
+  def avatar
+    @user = User.find_by_id(params[:id]) || @current_user
+    @avatars = @user.avatars.all
   end
 end

@@ -15,6 +15,10 @@
       <%= hidden_field "forum_post", "parent_id", :value => params["parent_id"] %>
       <table>
         <tr>
+          <td><label for="forum_post_avatar_id">Avatar</label></td>
+          <td><%= select_avatar("forum_post") %></td>
+        </tr>
+        <tr>
           <td><label for="forum_post_title">Title</label></td>
           <td><%= text_field "forum_post", "title", :size => 66 %></td>
         </tr>

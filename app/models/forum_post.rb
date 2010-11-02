@@ -1,5 +1,6 @@
 class ForumPost < ActiveRecord::Base
   belongs_to :creator, :class_name => "User", :foreign_key => :creator_id
+  has_one :avatar
   after_create :initialize_last_updated_by
   validate :validate_title
   validates_length_of :body, :minimum => 1, :message => "You need to enter a body"

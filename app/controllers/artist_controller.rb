@@ -1,5 +1,4 @@
 class ArtistController < ApplicationController
-  layout "default"
 
   before_filter :mod_only, :only => [:ban]
   before_filter :member_only, :only => [:create, :update, :destroy]

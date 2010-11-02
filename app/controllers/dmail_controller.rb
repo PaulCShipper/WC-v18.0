@@ -1,6 +1,5 @@
 class DmailController < ApplicationController
   before_filter :blocked_only
-  layout "default"
   
   def auto_complete_for_dmail_to_name
     @users = User.find(:all, :order => "lower(name)", :conditions => ["name ilike ? escape '\\\\'", params[:dmail][:to_name] + "%"])

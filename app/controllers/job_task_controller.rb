@@ -1,6 +1,4 @@
 class JobTaskController < ApplicationController
-  layout "default"
-
   before_filter :admin_only, :only => [ :destroy, :restart ]
   
   def index

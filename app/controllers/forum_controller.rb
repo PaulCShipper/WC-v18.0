@@ -1,8 +1,9 @@
 class ForumController < ApplicationController
-  layout "default"
   verify :method => :post, :only => [:create, :destroy, :update, :stick, :unstick, :lock, :unlock]
   before_filter :mod_only, :only => [:stick, :unstick, :lock, :unlock]
   before_filter :member_only, :only => [:create, :destroy, :update, :edit, :add, :mark_all_read]
+
+  helper :avatar
 
   def stick
     ForumPost.stick!(params[:id])
@@ -35,6 +36,7 @@ class ForumController < ApplicationController
     end
 
     @forum_post = ForumPost.create(params[:forum_post].merge(:creator_id => session[:user_id]))
+    @forum_post.avatar_id = @current_user.avatar_id unless @forum_post.avatar_id
 
     if @forum_post.errors.empty?
       if params[:forum_post][:parent_id].to_i == 0

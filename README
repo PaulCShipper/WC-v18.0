@@ -10,3 +10,14 @@ I'm going to post my progress as I go along until I arrive to my goal
 and make a significantly different application.
 
 Until then, it would be wise to follow Danbooru v2.0 http://github.com/r888888888/danbooru
+
+=============
+  Updates
+=============
+
+Created the avatar model
+- Users can create multiple avatars
+- Set default avatar and pick between them
+- Avatars have keywords or labels
+- Helper methods for avatars
+- Admins can hide inappropiate avatars

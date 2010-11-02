@@ -1,5 +1,4 @@
 class UserRecordController < ApplicationController
-  layout "default"
   before_filter :privileged_only, :only => [:create, :destroy]
   
   def index

@@ -1,5 +1,4 @@
 class TagImplicationController < ApplicationController
-  layout "default"
   before_filter :admin_only, :only => [:create, :update]
   verify :method => :post, :only => [:create, :update]
 
