@@ -12,6 +12,10 @@
     <% end %>
     <div class="body">
       <%= auto_link_tag_changes(post, format_text(post.body)) %>
+
+      <% if @current_user.is_admin? %>
+        <p><em><%= post.ip_addr %></em></p>
+      <% end %>
     </div>
     <div class="footer">
       <%= link_to "Edit", :action => "edit", :id => post.id %>

@@ -35,7 +35,7 @@ class ForumController < ApplicationController
       params[:forum_post][:body] = "Implicating [[#{params[:tag_implication][:predicate]}]] -> [[#{params[:tag_implication][:consequent]}]].\n\nReason: #{params[:tag_implication][:reason]}"
     end
 
-    @forum_post = ForumPost.create(params[:forum_post].merge(:creator_id => session[:user_id]))
+    @forum_post = ForumPost.create(params[:forum_post].merge(:creator_id => session[:user_id], :ip_addr => request.remote_ip))
     @forum_post.avatar_id = @current_user.avatar_id unless @forum_post.avatar_id
 
     if @forum_post.errors.empty?
