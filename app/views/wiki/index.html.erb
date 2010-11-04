@@ -1,5 +1,7 @@
 <div style="margin-bottom: 1em;">
-  <%= render :partial => "sidebar" %>
+  <% content_for("sidebar") do %>
+    <%= render :partial => "sidebar" %>
+  <% end %>
 
   <table width="70%" class="highlightable">
     <tr>

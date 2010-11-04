@@ -15,9 +15,24 @@ Until then, it would be wise to follow Danbooru v2.0 http://github.com/r88888888
   Updates
 =============
 
+ date: 11/4/2010
+
+Started on Pool Method
+- Added pool child and pool parent to post model
+- Added corresponding mehods, incomplete
+
+Started Layout Theme
+- Got old wildcritter theme working
+
+Added original name
+- Now posts save the original name of the file
+
+ date: 11/3/2010
+
 Created the avatar model
 - Users can create multiple avatars
 - Set default avatar and pick between them
 - Avatars have keywords or labels
 - Helper methods for avatars
 - Admins can hide inappropiate avatars
+

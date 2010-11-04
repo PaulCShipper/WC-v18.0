@@ -1,7 +1,7 @@
 class StaticController < ApplicationController
-  layout "bare"
+  layout CONFIG["layout"] + "bare"
   
   def overloaded
-    render :layout => "default"
+    render :layout => CONFIG["layout"] + "default"
   end
 end

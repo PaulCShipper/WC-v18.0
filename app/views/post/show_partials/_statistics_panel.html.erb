@@ -16,6 +16,11 @@
         <li>Source: <%= h @post.source %></li>
       <% end %>
     <% end %>
+    <% unless @post.original_name %>
+      <li>Original Name: N/A</li>
+    <% else %>
+      <li>File Name: <%= h short_string(@post.original_name) %></li>
+    <% end %>
     <li>Rating: <%= @post.pretty_rating %></li>
     <li>
       Score: <span id="post-score-<%= @post.id %>"><%= @post.score %></span> 

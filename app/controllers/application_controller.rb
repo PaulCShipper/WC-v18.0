@@ -2,7 +2,7 @@
 
 class ApplicationController < ActionController::Base
   include ExceptionNotifiable
-  layout "default"
+  layout CONFIG["layout"] + "default"
   
   module LoginSystem
     protected

@@ -1,0 +1,158 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+  <head>
+    <title><%= @page_title %></title>
+    <meta name="RATING" content="RTA-5042-1996-1400-1577-RTA">
+    <meta name="viewport" content="width=830"/>
+    <meta name="keywords" content="cute,kawaii,kemono,yiff,furry,critter">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="top" title="<%= CONFIG["app_name"] %>" href="<%= CONFIG["url_base"] %>/">
+    <%= @content_for_html_header %>
+    <%= auto_discovery_link_tag :rss, :controller => "post", :action => "atom", :tags => params[:tags] %>
+    <%= stylesheet_link_tag "old_wildcritters" %>
+    <%= javascript_include_tag "http://ajax.googleapis.com/ajax/libs/prototype/1.6.1.0/prototype.js" %>
+    <%= javascript_include_tag :all, :cache => "application" %>
+    <%= CONFIG["custom_html_headers"] %>
+    <!--[if lt IE 7]>
+      <style type="text/css">
+        body div#post-view > div#right-col > div > div#note-container > div.note-body {
+          overflow: visible;
+        }
+      </style>
+      <script src="http://ie7-js.googlecode.com/svn/trunk/lib/IE7.js" type="text/javascript"></script>
+    <![endif]-->
+	<!-- <script src="http://www.khakain.com/dunkinbean/animated/snow4.js" type="text/javascript"></script> -->
+  </head>
+  <body style="padding: 10px 20px 10px 20px;">
+    <% if (nil) %>
+      <p style="border: 1px solid rgb(241, 210, 156); padding: 1em; background-color: rgb(255, 244, 195); text-align: center; font-size: 150%; color: darkred;">
+        Currently undergoing some maintenance, lol. Things will look ugly. Things will not work.<br>
+        Please bear with. Might wanna hit ctrl+F5 occasionally, too.
+      </p>
+    <% end %>
+    
+    <table id="page_container" width="100%">
+      <!-- Header ("folder tabs") -->
+      <tr>
+        <td id="header">
+          <table cellspacing="0" cellpadding="0" style="width:100%;">
+            <tr>
+              <td style="width: 750px;">
+                <a href="<%= CONFIG["url_base"] %>/"><img src="<%= CONFIG["url_base"] %>/images/old_wildcritters/tab-tl.gif" style="float: left;" alt="WC" title="Back to main page."></a>
+                <ul class="flat-list" id="navbar" style="margin-left: 5px; background-image: url(<%= CONFIG["url_base"] %>/images/old_wildcritters/tab-bg.gif); background-repeat: repeat-x;">
+                  <% if @current_user.is_member_or_higher? %>
+                    <%= navbar_link_to("My Account", {:controller => "user", :action => "home"}) %>
+                  <% else %>
+                    <%= navbar_link_to("Login/Signup", {:controller => "user", :action => "login"}) %>
+                  <% end %>
+                  <%= navbar_link_to("Posts", :controller => "post", :action => "index") %>
+                  <%= navbar_link_to("Comments", :controller => "comment", :action => "index") %>
+                  <%= navbar_link_to("Notes", :controller => "note", :action => "index") %>
+                  <%= navbar_link_to("Artists", :controller => "artist", :action => "index", :order => "date") %>
+                  <%= navbar_link_to("Tags", :controller => "tag", :action => "index", :order => "date") %>
+                  <%= navbar_link_to("Pools", :controller => "pool", :action => "index") %>
+                  <%= navbar_link_to("Wiki", :controller => "wiki", :action => "show", :title => "help:home") %>
+                  <%= navbar_link_to("Forum", {:controller => "forum", :action => "index"}, :class => (@current_user.has_forum_been_updated? ? "forum-update" : nil)) %>
+                  <%= navbar_link_to("&raquo;", :controller => "static", :action => "more") %>
+                </ul>
+              </td>
+              <td style="width: 24px; background: url(<%= CONFIG["url_base"] %>/images/old_wildcritters/tab-tm.gif) no-repeat right bottom;"></td>
+              <td style="background-image: url(<%= CONFIG["url_base"] %>/images/old_wildcritters/tab-sbg.gif);">&nbsp; </td>
+              <td style="width: 10px; background: url(<%= CONFIG["url_base"] %>/images/old_wildcritters/tab-tr.gif) no-repeat right bottom;"></td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <table cellspacing="0" cellpadding="0" style="width:100%; background-color: #FFFCF3;">
+            <tr>
+              <td style="min-width: 4px; width: 4px; background-image: url(<%= CONFIG["url_base"] %>/images/old_wildcritters/fldr-lf.gif); background-repeat: repeat-y;"> </td>
+              <td style="overflow: visible;">
+                <% if @content_for_subnavbar %>
+                  <ul class="flat-list" id="subnavbar">
+                    <%= @content_for_subnavbar %>
+                  </ul>
+                <% else %>
+                    &nbsp;
+                <% end %>
+                
+                <% if @content_for_subsubnavbar %>
+                  <ul class="flat-list" id="subsubnavbar">
+                    <%= @content_for_subsubnavbar %>
+                  </ul>
+                  &nbsp;
+                <% end %>
+                
+                <% if flash[:notice] %>
+                  <div id="notice"><%= (h flash[:notice]).gsub(/\n/, "<br />") %></div>
+                <% else %>
+                  <div id="notice" style="display: none;"></div>
+                <% end %>
+                
+                <div class="has-mail" id="has-mail-notice" style="display: none;">
+                  <%= link_to "You have mail", :controller => "dmail", :action => "inbox" %>
+                </div>
+
+                <div class="blocked" id="block-reason" style="display: none;">
+                </div>
+              </td>
+              <td style="min-width: 7px; width: 7px; background-image: url(<%= CONFIG["url_base"] %>/images/old_wildcritters/fldr-rt.gif); background-repeat: repeat-y;"> </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <!-- End Header -->
+      
+      <!-- Body(content) -->
+      <tr>
+        <td>
+          <table cellspacing="0" cellpadding="0" style="width:100%; background: #FFFCF3;">
+            <tr>
+              <td style="min-width: 4px; width: 4px; background-image: url(<%= CONFIG["url_base"] %>/images/old_wildcritters/fldr-lf.gif); background-repeat: repeat-y;"><img src="/images/old_wildcritters/clear.gif" width="1" height="476" alt=""></td>
+              <td style="background: transparent url(/images/old_wildcritters/russet-bg-default.jpg) no-repeat scroll bottom right;">
+                <table width="100%">
+                  <tr>
+                    <% if @content_for_sidebar %>
+                    <td id="sidebar" width="20%">
+                      <%= @content_for_sidebar %>
+                    </td>
+                    <% end %>
+                    <td id="content">
+                      <br>
+                      <%= @content_for_layout %>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+              <td style="min-width: 7px; width: 7px; background-image: url(<%= CONFIG["url_base"] %>/images/old_wildcritters/fldr-rt.gif); background-repeat: repeat-y;"> </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <!-- End Body -->
+      
+      <tr>
+        <td>
+          <table cellspacing="0" cellpadding="0" style="width:100%; background-color: #FFFCF3;">
+            <tr style="height: 27px;">
+              <td style="background-image: url(<%= CONFIG["url_base"] %>/images/old_wildcritters/ftr-lf.gif); background-repeat: no-repeat; width: 31px;">&nbsp;</td>
+              <td style="background-image: url(<%= CONFIG["url_base"] %>/images/old_wildcritters/ftr-md.gif); background-repeat: repeat-x;">&nbsp;</td>
+              <td style="background-image: url(<%= CONFIG["url_base"] %>/images/old_wildcritters/ftr-rt.gif); background-repeat: no-repeat; width: 7px;">&nbsp;</td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      
+      <tr style="display: none;">
+        <td>
+          <script type="text/javascript">
+            Cookie.setup()
+          </script>
+          <%= @content_for_post_cookie_javascripts %>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

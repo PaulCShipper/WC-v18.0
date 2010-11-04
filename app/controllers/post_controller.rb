@@ -1,5 +1,4 @@
 class PostController < ApplicationController
-  layout 'default'
 
   verify :method => :post, :only => [:update, :destroy, :create, :revert_tags, :vote, :flag], :redirect_to => {:action => :show, :id => lambda {|c| c.params[:id]}}
   before_filter :member_only, :only => [:create, :upload, :destroy, :flag, :update, :revert_tags, :random]

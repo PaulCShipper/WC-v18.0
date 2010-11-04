@@ -4,16 +4,18 @@
   <% else %>
     <%= render :partial => "post/show_partials/status_notices" %>
 
-    <div class="sidebar">
-      <%= render :partial => "search" %>
-      <%= print_advertisement("vertical") %>
-      <h5>Tags</h5>
-      <%= print_tag_sidebar(@post) %>
-      <%= render :partial => "post/show_partials/statistics_panel" %>
-      <%= render :partial => "post/show_partials/options_panel" %>
-      <%= render :partial => "post/show_partials/history_panel" %>
-      <%= render :partial => "post/show_partials/related_posts_panel" %>
-    </div>
+    <% content_for("sidebar") do %>
+      <div class="sidebar">
+        <%= render :partial => "search" %>
+        <%= print_advertisement("vertical") %>
+        <h5>Tags</h5>
+        <%= print_tag_sidebar(@post) %>
+        <%= render :partial => "post/show_partials/statistics_panel" %>
+        <%= render :partial => "post/show_partials/options_panel" %>
+        <%= render :partial => "post/show_partials/history_panel" %>
+        <%= render :partial => "post/show_partials/related_posts_panel" %>
+      </div>
+    <% end %>
     <div class="content" id="right-col" <% if false && CONFIG["can_see_ads"].call(@current_user) %>style="width: 60%;"<% end %>>
       <%= print_advertisement("horizontal") %>
       <%= render :partial => "post/show_partials/image" %>      

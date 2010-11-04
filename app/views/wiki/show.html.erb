@@ -1,5 +1,7 @@
 <div class="wiki" id="wiki-show">
-  <%= render :partial => "sidebar" %>
+  <% content_for("sidebar") do %>
+    <%= render :partial => "sidebar" %>
+  <% end %>
 
   <h2 class="title"><%= @presenter.html_title %></h2>
 

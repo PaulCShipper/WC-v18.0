@@ -1,5 +1,8 @@
 To do list, or things to get back to
 
+BlackList
+  fix blacklist model.  It's not working in current version
+
 Avatar:
   fix edit_avatar so the browser will remain on the page
   Make an easier way to set default for avatars

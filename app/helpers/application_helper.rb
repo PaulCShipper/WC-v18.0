@@ -186,4 +186,11 @@ module ApplicationHelper
       </span>
     }
   end
+
+  def short_string(str, num = 15)
+    if str.length > num
+      return str[0,num] + "..."
+    end
+    str
+  end
 end

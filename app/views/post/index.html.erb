@@ -6,62 +6,64 @@
   <% end %>
 
   <div class="sidebar">
-    <%= render :partial => "search" %>
+    <% content_for("sidebar") do %>
+      <%= render :partial => "search" %>
     
-    <%= print_advertisement("vertical") %>
+      <%= print_advertisement("vertical") %>
 
-    <div style="margin-bottom: 1em;">
-      <h5>Mode</h5>
-      <form onsubmit="return false;" action="">
-        <select name="mode" id="mode" onchange="PostModeMenu.change()" style="width: 13em;">
-          <option value="view">View posts</option>
-          <option value="edit">Edit posts</option>
-          <option value="add-fav">Add to favorites</option>
-          <option value="remove-fav">Remove from favorites</option>
-          <% if @current_user.is_privileged_or_higher? %>
-            <option value="rating-s">Rate safe</option>
-            <option value="rating-q">Rate questionable</option>
-            <option value="rating-e">Rate explicit</option>
-            <option value="vote-up">Vote up</option>
-            <option value="vote-down">Vote down</option>
-            <option value="lock-rating">Lock rating</option>
-            <option value="lock-note">Lock notes</option>
-            <option value="edit-tag-script">Edit tag script</option>
-            <option value="apply-tag-script">Apply tag script</option>
-          <% end %>
-          <% if @current_user.is_janitor_or_higher? %>
-            <option value="approve">Approve post</option>
-          <% end %>
-          <option value="flag">Flag post</option>
-        </select>          
-      </form>
-    </div>
+      <div style="margin-bottom: 1em;">
+        <h5>Mode</h5>
+        <form onsubmit="return false;" action="">
+          <select name="mode" id="mode" onchange="PostModeMenu.change()" style="width: 13em;">
+            <option value="view">View posts</option>
+            <option value="edit">Edit posts</option>
+            <option value="add-fav">Add to favorites</option>
+            <option value="remove-fav">Remove from favorites</option>
+            <% if @current_user.is_privileged_or_higher? %>
+              <option value="rating-s">Rate safe</option>
+              <option value="rating-q">Rate questionable</option>
+              <option value="rating-e">Rate explicit</option>
+              <option value="vote-up">Vote up</option>
+              <option value="vote-down">Vote down</option>
+              <option value="lock-rating">Lock rating</option>
+              <option value="lock-note">Lock notes</option>
+              <option value="edit-tag-script">Edit tag script</option>
+              <option value="apply-tag-script">Apply tag script</option>
+            <% end %>
+            <% if @current_user.is_janitor_or_higher? %>
+              <option value="approve">Approve post</option>
+            <% end %>
+            <option value="flag">Flag post</option>
+          </select>          
+        </form>
+      </div>
         
-    <div id="blacklisted-sidebar" style="display: none; margin-bottom: 1em;">
-      <h5>
-        <%= link_to_function "Hidden", "$('blacklisted-list').toggle()" %>
-        <span id="blacklist-count" class="post-count"></span>
-      </h5>
-      <ul id="blacklisted-list" style="display: none;">
-      </ul>
-    </div>
-
-    <div style="margin-bottom: 1em;">
-      <h5>
-        <%= link_to_function "Tags", "$('sidebar-tags').show(); $('sidebar-wiki').hide()" %> 
-        <% if @artist || @wiki_page %>
-          | <%= link_to_function "Wiki", "$('sidebar-tags').hide(); $('sidebar-wiki').show()" %> 
-        <% end %>
-      </h5>
-
-      <div id="sidebar-tags">
-        <%= print_tag_sidebar(params[:tags]) %>
+      <div id="blacklisted-sidebar" style="display: none; margin-bottom: 1em;">
+        <h5>
+          <%= link_to_function "Hidden", "$('blacklisted-list').toggle()" %>
+          <span id="blacklist-count" class="post-count"></span>
+        </h5>
+        <ul id="blacklisted-list" style="display: none;">
+        </ul>
       </div>
-      
-      <div id="sidebar-wiki" style="margin-top: 1em; display: none;">
-        <%= wiki_excerpt(@artist, @wiki_page, @tags) %>
+
+      <div style="margin-bottom: 1em;">
+        <h5>
+          <%= link_to_function "Tags", "$('sidebar-tags').show(); $('sidebar-wiki').hide()" %> 
+          <% if @artist || @wiki_page %>
+            | <%= link_to_function "Wiki", "$('sidebar-tags').hide(); $('sidebar-wiki').show()" %> 
+          <% end %>
+        </h5>
+
+        <div id="sidebar-tags">
+          <%= print_tag_sidebar(params[:tags]) %>
+        </div>
+        
+        <div id="sidebar-wiki" style="margin-top: 1em; display: none;">
+          <%= wiki_excerpt(@artist, @wiki_page, @tags) %>
+        </div>
       </div>
-    </div>
+    <% end %>
   </div>
   <div class="content" <% if CONFIG["can_see_ads"].call(@current_user) %>style="width: 60%;"<% end %>>
     <%= print_advertisement("horizontal") %>      
@@ -135,5 +137,5 @@
 <%= render :partial => "footer" %>
 
 <div style="clear: both; color: #CCC;">
-  <em>Total: <%= Time.now - @render_start_time + @db_delta_time %>s; DB: <%= @db_delta_time %>s; Page: <%= Time.now - @render_start_time %>s; Created <%= Time.now.strftime("%H:%M") %></em>
+  <em class="footer-total">Total: <%= Time.now - @render_start_time + @db_delta_time %>s; DB: <%= @db_delta_time %>s; Page: <%= Time.now - @render_start_time %>s; Created <%= Time.now.strftime("%H:%M") %></em>
 </div>

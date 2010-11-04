@@ -118,6 +118,9 @@ module PostMethods
       self.source = "" if source.nil?
     
       return if source !~ /^http:\/\// || !file_ext.blank?
+
+      # to save original file name
+      self.original_name = source[/[^\/]*$/]
     
       begin
         Danbooru.http_get_streaming(source) do |response|
@@ -153,6 +156,7 @@ module PostMethods
       return if f.nil? || f.size == 0
 
       self.file_ext = content_type_to_file_ext(f.content_type) || find_ext(f.original_filename)
+      self.original_name = f.original_filename
 
       if f.local_path
         # Large files are stored in the temp directory, so instead of
