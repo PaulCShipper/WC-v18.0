@@ -41,8 +41,8 @@ module AvatarHelper
     end
 
     selector = case type
-      when "comment" then collection_select(:comment, :avatar_id, @current_user.avatars.all, 'id', 'label', :include_blank => "(defaul)")
-      when "forum_post" then collection_select(:forum_post, :avatar_id, @current_user.avatars.all, 'id', 'label', :include_blank => "(defaul)")
+      when "comment" then collection_select(:comment, :avatar_id, @current_user.avatars.all(:conditions => "show = true"), 'id', 'label', :include_blank => "(defaul)")
+      when "forum_post" then collection_select(:forum_post, :avatar_id, @current_user.avatars.all(:conditions => "show = true"), 'id', 'label', :include_blank => "(defaul)")
     end
     return selector
   end

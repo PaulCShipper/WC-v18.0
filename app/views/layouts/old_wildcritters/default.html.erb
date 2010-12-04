@@ -115,9 +115,10 @@
                 <table width="100%">
                   <tr>
                     <% if @content_for_sidebar %>
-                    <td id="sidebar" width="20%">
-                      <%= @content_for_sidebar %>
-                    </td>
+                      <td id="sidebar" width="20%">
+                        <%= @content_for_sidebar %>
+                        <%= @greeting %>
+                      </td>
                     <% end %>
                     <td id="content">
                       <br>

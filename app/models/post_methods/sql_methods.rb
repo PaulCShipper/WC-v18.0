@@ -92,6 +92,10 @@ module PostMethods
           conds << "p.status <> 'deleted'"
         end
 
+        unless options[:include_pool]
+          conds << "( p.pool_parent = true OR p.pool_child = false )"
+        end
+
         if q[:parent_id].is_a?(Integer)
           conds << "(p.parent_id = ? or p.id = ?)"
           cond_params << q[:parent_id]

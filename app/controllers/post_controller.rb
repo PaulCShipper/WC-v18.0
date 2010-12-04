@@ -187,14 +187,23 @@ public
   end
 
 private
-  def index_after_thousand(tags, per_page, before_id)
-    @posts = Post.find_by_sql(Post.generate_sql(tags.join(" "), :order => "p.id DESC", :limit => per_page, :before_id => before_id))
+  def index_after_thousand(tags, per_page, before_id, pool = nil)
+
+    # my edit
+    hash = {:order => "p.id DESC", :limit => per_page, :before_id => before_id}
+    hash.merge!(:include_pool => true) if pool
+
+    @posts = Post.find_by_sql(Post.generate_sql(tags.join(" "), hash))
   end
   
-  def index_before_thousand(tags, page, per_page)
+  def index_before_thousand(tags, page, per_page, pool = nil)
     post_count = Post.fast_count(tags.join(" "), :user => @current_user)
+
     @posts = WillPaginate::Collection.create(page, per_page, post_count) do |pager|
-      pager.replace(Post.find_by_sql(Post.generate_sql(tags.join(" "), :order => "p.id DESC", :offset => pager.offset, :limit => pager.per_page)))
+      # my edit
+      hash = {:order => "p.id DESC", :offset => pager.offset, :limit => pager.per_page}
+      hash.merge!(:include_pool => true) if pool
+      pager.replace(Post.find_by_sql(Post.generate_sql(tags.join(" "), hash)))
     end
     
     # @tag_suggestions = Tag.find_suggestions(tags.join(" ")) if post_count < 20 && tags.size == 1
@@ -207,6 +216,7 @@ public
     page = params[:page].to_i; page = 1 if page == 0
     limit = params[:limit].to_i; limit = 20 if limit == 0; limit = 1000 if limit > 1000
     before_id = params[:before_id]
+    pool = params[:pool]
     
     if page > 1000
       respond_to_error("You can only search up to page 1,000", :action => "error")
@@ -230,9 +240,9 @@ public
       @db_delta_time = Time.now - db_start_time
 
       if before_id
-        index_after_thousand(@tags, limit, before_id)
+        index_after_thousand(@tags, limit, before_id, pool)
       else
-        index_before_thousand(@tags, page, limit)
+        index_before_thousand(@tags, page, limit, pool)
 
         # If there are blank pages for this query, then fix the post count
         if @posts.size == 0 && page > 1 && @tags.size == 1 && JobTask.pending_count("calculate_post_count") < 1000

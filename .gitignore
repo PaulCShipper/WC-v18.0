@@ -22,3 +22,6 @@ lib/danbooru_image_resizer/Makefile
 config/database.yml
 log/*.*
 public/avatars/*.*
+
+# my wp leaves these all over the place
+*.save

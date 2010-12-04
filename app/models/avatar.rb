@@ -2,10 +2,15 @@ class Avatar < ActiveRecord::Base
   before_validation_on_create :ensure_tempfile_exists
   before_validation_on_create :move_file
   before_validation_on_create :avatar_limit
+  before_validation_on_create :name
   belongs_to :user
   belongs_to :comment
   belongs_to :forum_post
     
+  def name
+    if label == "" then self.label = Avatar.all(:conditions => ["user_id = ?", user_id]).count + 1 end
+  end
+
   def ensure_tempfile_exists
     unless File.exists?(tempfile_path)
       errors.add :file, "not found, try uploading again"

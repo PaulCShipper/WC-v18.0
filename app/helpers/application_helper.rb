@@ -177,17 +177,19 @@ module ApplicationHelper
     title = "#{h(post.cached_tags)} rating:#{post.pretty_rating} score:#{post.score} user:#{h(post.author)}"
 
     content_for(:blacklist) { "Post.register(#{post.to_json});\n" } if options[:blacklist]
-    
+
+    # There has to be an easier way to do this.    
+
     %{
       <span class="thumb #{blacklist}" id="p#{post.id}">
         <a href="/post/show/#{post.id}/#{u(post.tag_title)}" #{link_onclick}>
-          <img #{image_id} class="preview #{'flagged' if post.is_flagged?} #{'pending' if post.is_pending?} #{'has-children' if post.has_children?} #{'has-parent' if post.parent_id}" src="#{post.preview_url}" title="#{title}" alt="#{title}" width="#{width}" height="#{height}">
+          <img #{image_id} class="preview #{'flagged' if post.is_flagged?} #{'pending' if post.is_pending?} #{'has-children' if post.has_children?} #{'has-parent' if post.parent_id} #{'pool' if post.pool_parent or post.pool_child}" src="#{post.preview_url}" title="#{title}" alt="#{title}" width="#{width}" height="#{height}">
         </a>
       </span>
     }
   end
 
-  def short_string(str, num = 15)
+  def short_string(str, num = 10)
     if str.length > num
       return str[0,num] + "..."
     end

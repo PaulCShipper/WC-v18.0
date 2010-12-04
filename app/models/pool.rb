@@ -2,10 +2,19 @@ class Pool < ActiveRecord::Base
   belongs_to :user
   attr_protected :user_id, :post_count
   
+  # return the ID of the first post in the pool
+  def first
+    poolpost = PoolPost.first :conditions => ["pool_id = ? AND sequence = 0", id]
+    poolpost.post_id
+  end
+
   class PostAlreadyExistsError < Exception
   end
   
   class AccessDeniedError < Exception
+  end
+
+  class PostAlreadyInPool < Exception
   end
   
   module UpdateMethods
@@ -49,13 +58,27 @@ class Pool < ActiveRecord::Base
         if PoolPost.exists?(["pool_id = ? AND post_id = ?", id, post_id])
           raise PostAlreadyExistsError
         end
-        
+
+        # the above could be replaced with this
+        if PoolPost.exists?(["post_id = ?", post_id])
+          raise PostAlreadyInPool
+        end        
+
         if options[:user] && !can_be_updated_by?(options[:user])
           raise AccessDeniedError
         end
         
         seq = options[:sequence] || next_sequence
         PoolPost.create(:pool_id => id, :post_id => post_id, :sequence => seq.to_i)
+
+        # my edit, should make one function for this
+        post = Post.find post_id
+        if seq = 0
+          post.p_parent
+        else
+          post.p_child
+        end
+
         update_attribute :post_count, PoolPost.count(:conditions => ["pool_id = ?", id])
 
         unless options[:skip_update_pool_links]
@@ -71,6 +94,11 @@ class Pool < ActiveRecord::Base
         end
         
         if PoolPost.exists?(["pool_id = ? and post_id = ?", id, post_id])
+
+          # my edit
+          post = Post.find_by_id  post_id
+          post.out_of_pool
+
           PoolPost.destroy_all(["pool_id = ? and post_id = ?", id, post_id])
           update_attribute :post_count, PoolPost.count(:conditions => ["pool_id = ?", id])
           update_pool_links
@@ -87,6 +115,14 @@ class Pool < ActiveRecord::Base
           pp[i].next_post_id = pp[i + 1].post_id unless i == pp.size - 1
           pp[i].prev_post_id = pp[i - 1].post_id unless i == 0
           pp[i].save
+
+          # my edit for pool grouping
+          post = Post.find pp[i].post_id
+          if i == 0
+            post.p_parent
+          else
+            post.p_child(pp[i].pool_id)
+          end
         end
       end
     end
@@ -159,10 +195,4 @@ class Pool < ActiveRecord::Base
   include ApiMethods
   include NameMethods
   include UpdateMethods
-end
-
-class PoolPost < ActiveRecord::Base
-  set_table_name "pools_posts"
-  belongs_to :post
-  belongs_to :pool
 end

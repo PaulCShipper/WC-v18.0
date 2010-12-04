@@ -2,7 +2,9 @@
   <h5>Search</h5>
   <% form_tag({:controller => "post", :action => "index"}, :method => "get") do %>
     <div>
-      <%= text_field_tag("tags", params[:tags], :size => 20) %>
+      <%= text_field_tag("tags", params[:tags], :size => 20) %><br/>
+      <%= check_box_tag(:pool, "show") %>
+      <%= label_tag(:pool, "include pool") %>
       <%= submit_tag "Search", :style => "display: none;" %>      
     </div>
   <% end %>    

@@ -485,9 +485,10 @@ td#content table td {
 }
 
 div.content {
-  float: left;
+  float: right;
   margin: 0;
   width: 77%;
+  min-width: 77%;
 }
 
 td.content {
@@ -859,7 +860,9 @@ div.response-list > div.post > div.content > div.footer a {
 }
 
 div.sidebar {
-  margin-right: 1em;
+  width: 20%
+  margin-right: 5em;
+  float: left;
   overflow: visible;
 }
 

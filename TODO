@@ -2,6 +2,7 @@ To do list, or things to get back to
 
 BlackList
   fix blacklist model.  It's not working in current version
+  problem deals with the layout.
 
 Avatar:
   fix edit_avatar so the browser will remain on the page
@@ -13,13 +14,18 @@ Pool:
   Compress pools so the first post will appear and the others are hidden
   Include all the tags on the first pool post
   incorporate the tag method instead of working around it
+  make a way to show new entries into a pool for a set amount of time
+  Create a jobtask to check pool tag after an update
 
 Themes:
   create theme table
+  - fix content_for problem with official and wc theme
 
 Post:
   create an easy way to make pools and upload zip files.
   
-
 User:
   create a point system that rewards users based on what they do with the site.
+
+Duplicate checker:
+  Include the db server and add it into the app's fuction

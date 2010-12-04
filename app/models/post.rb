@@ -25,6 +25,7 @@ class Post < ActiveRecord::Base
   include PostMethods::ModerationMethods
   include PostMethods::DeletionMethods
   include PostMethods::FlagMethods
+  include PostMethods::PoolMethods
   
   # TODO: refactor or eliminate
   def favorited_by
@@ -62,5 +63,12 @@ class Post < ActiveRecord::Base
     else
       source
     end
+  end
+
+  # to find the first post in a pool
+  def first_in_pool
+    pool = self.pools[0]
+    return Post.find_by_id(pool.first) if pool
+    pool
   end
 end
