@@ -14,7 +14,7 @@ class UpdatePoolRelation < ActiveRecord::Migration
         elsif pp.sequence == 0
           post.p_parent
         else
-          post.p_child
+          post.p_child pp.pool_id
         end
       end
     end
