@@ -15,7 +15,13 @@ module PostMethods
       m.before_validation_on_create :move_file
       # m.before_validation_on_create :distribute_file # <- to allow uploading
     end
-    
+
+    # to check different extensions.  [jpg, jpeg, gif, and png], 4 in all
+    def change_ext(num)
+      pic_end = [".jpg", ".jpeg", ".gif", ".png"]
+      self.source.sub!(/\.[^\.]+$/, pic_end[num])
+    end
+
     def distribute_file
       CONFIG["servers"].each do |server|
         if server != Socket.gethostname
@@ -119,8 +125,42 @@ module PostMethods
     
       return if source !~ /^http:\/\// || !file_ext.blank?
 
+      ##################################################################
+      # below are the custom changes to upload from different websites #
+      ##################################################################
+
+      # for pixiv pictures, fix this.
+      if source =~ /pixiv\.net\/img\//
+        if source =~/(_m|_s)\.[^\.]+$/
+          ext_end = source[/\.[^\.]+$/]
+          source.sub!(/(_s|_m)\.[^\.]+$/, ext_end)
+        end
+
+        if source =~ /_p(\d)+\.[^\.]+$/ and !source[/_big_p(\d)+/]
+          ext_end = source[/_p(\d)+\.[^\.]+$/]
+          source.sub!(/_p(\d)+\.[^\.]+$/, "_big" + ext_end)
+        end
+      end
+
+      # for FurAffinity.net
+      if source =~ /d\.facdn\.net\/art/ and source =~ /\.(thumbnail|half)\./
+        source.sub!(/\.(thumbnail|half)\./,".")
+      end
+
+      # for DeviantArt.net
+      if source =~ /deviantart\.net/ and source =~ /\/(150|PRE)\//
+        source.sub!(/\/(150|PRE)\//,"/")
+      end
+
+      #######
+      # end #
+      #######
+
       # to save original file name
       self.original_name = source[/[^\/]*$/]
+
+      # to check the number of ext
+      num_ext = 0
     
       begin
         Danbooru.http_get_streaming(source) do |response|
@@ -138,6 +178,15 @@ module PostMethods
         return true
       rescue SocketError, URI::Error, SystemCallError => x
         delete_tempfile
+
+        # try changing the ext
+        if num_ext < 4
+          change_ext(num_ext)
+          num_ext += 1
+          retry
+        end
+
+        errors.add("pixiv", "retrying in of a pixiv pool") if source =~ /pixiv\.net\/img\// and !source[/_big_p[\d]+\.[^\.]+$/]
         errors.add "source", "couldn't be opened: #{x}"
         return false
       end

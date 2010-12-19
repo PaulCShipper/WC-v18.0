@@ -55,16 +55,16 @@ public
       status = "pending"
     end
 
-		begin
-    	@post = Post.new(params[:post].merge(:updater_user_id => @current_user.id, :updater_ip_addr => request.remote_ip))
-    	@post.user_id = @current_user.id
-    	@post.status = status
-    	@post.ip_addr = request.remote_ip
-    	@post.save
-		rescue Errno::ENOENT
-			respond_to_error("Internal error. Try uploading again.", {:controller => "post", :action => "error"})
-			return
-		end
+    begin
+      @post = Post.new(params[:post].merge(:updater_user_id => @current_user.id, :updater_ip_addr => request.remote_ip))
+      @post.user_id = @current_user.id
+      @post.status = status
+      @post.ip_addr = request.remote_ip
+      @post.save
+    rescue Errno::ENOENT
+      respond_to_error("Internal error. Try uploading again.", {:controller => "post", :action => "error"})
+      return
+    end
 
     if @post.errors.empty?
       if params[:md5] && @post.md5 != params[:md5].downcase
@@ -81,10 +81,40 @@ public
       p.update_attributes(update)
 
       respond_to_error("Post already exists", {:controller => "post", :action => "show", :id => p.id, :tag_title => @post.tag_title}, :api => {:location => url_for(:controller => "post", :action => "show", :id => p.id)}, :status => 423)
+    elsif @post.errors.invalid?(:pixiv)
+      ppool = pixiv_pool(params[:post], status)
+      if ppool
+        @post = Post.find(ppool)
+        respond_to_success("Post uploaded", {:controller => "post", :action => "show", :id => @post.id, :tag_title => @post.tag_title}, :api => {:post_id => @post.id, :location => url_for(:controller => "post", :action => "show", :id => @post.id)})
+      else
+        respond_to_error("still trying", :action => "error")
+      end
     else
       respond_to_error(@post, :action => "error")
     end
   end
+
+  # mess with this some more
+  def pixiv_pool(post, status)
+    ext = post[:source][/\.[^\.]+$/]
+    base = post[:source].sub(/\.[^\.]+$/, "_big_p")
+    num = 0
+    post_id = nil
+
+    begin
+      post_id = @post.id
+      alt_source = base + num.to_s + ext
+      @post = Post.new(params[:post].merge(:updater_user_id => @current_user.id, :updater_ip_addr => request.remote_ip))
+      @post.user_id = @current_user.id
+      @post.status = status
+      @post.ip_addr = request.remote_ip
+      @post.source = alt_source
+      @post.save
+      num += 1
+    end until(@post.errors.invalid?(:source) or !@current_user.can_upload?)
+    post_id
+  end
+
 
   def moderate
     if request.post?
