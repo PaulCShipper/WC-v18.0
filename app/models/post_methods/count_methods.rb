@@ -1,9 +1,13 @@
 module PostMethods
   module CountMethods
     module ClassMethods
-      def fast_count(tags = nil, options = {})
+      def fast_count(tags = nil, options = {}, pool = nil)
         if tags.blank?
-          return select_value_sql("SELECT row_count FROM table_data WHERE name = 'posts'").to_i
+          if pool
+            return select_value_sql("SELECT row_count FROM table_data WHERE name = 'posts'").to_i
+          else
+            return select_value_sql("SELECT COUNT(*) FROM posts WHERE (pool_parent = true OR pool_child = false)").to_i
+          end
         else
           c = select_value_sql("SELECT post_count FROM tags WHERE name = ?", tags).to_i
           if c == 0

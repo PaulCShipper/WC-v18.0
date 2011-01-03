@@ -227,7 +227,7 @@ private
   end
   
   def index_before_thousand(tags, page, per_page, pool = nil)
-    post_count = Post.fast_count(tags.join(" "), :user => @current_user)
+    post_count = Post.fast_count(tags.join(" "),{:user => @current_user}, pool)
 
     @posts = WillPaginate::Collection.create(page, per_page, post_count) do |pager|
       # my edit

@@ -1,5 +1,5 @@
 class Post < ActiveRecord::Base
-  STATUSES = %w(active pending flagged deleted)
+  STATUSES = %w(active pending flagged deleted untagged)
   
   has_many :notes, :order => "id desc"
   has_and_belongs_to_many :pools
