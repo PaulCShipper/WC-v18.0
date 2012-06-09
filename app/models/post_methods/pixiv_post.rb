@@ -46,8 +46,8 @@ module PostMethods
 
       # make sure id and pass are hidden in local_config.rb
       login = login_page.form_with(:action => '/login.php') do |f|
-        f.pixiv_id = "piipii"
-        f.pass = "Kastaway"
+        f.pixiv_id = ""
+        f.pass = ""
         f.checkbox_with(:name => "skip").check
       end.click_button
 
