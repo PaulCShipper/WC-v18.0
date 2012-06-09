@@ -57,7 +57,7 @@
           <tr>
             <td></td>
             <td>
-              <%= submit_tag "Upload", :tabindex => 8, :accesskey => "s" %>
+              <%= submit_tag "Upload", :tabindex => 10, :accesskey => "s" %>
               <%= button_to_function "Find similar", "$('always-find-similar-container').show(); Post.find_similar()" %>
               
               <span style="display: none;" id="always-find-similar-container">
@@ -86,13 +86,24 @@
           </tr>
           <tr>
             <th>
+              <label for="post_title">Title</label>
+              <% unless @current_user.is_privileged_or_higher? %>
+                <p>Enter the title of the picture</p>
+              <% end %>
+            </th>
+            <td>
+              <%= text_field "post", "title", :value => params["url"], :size => 50, :tabindex => 3 %>
+            </td>
+          </tr>
+          <tr>
+            <th>
               <label for="post_tags">Tags</label>
               <% unless @current_user.is_privileged_or_higher? %>
                 <p>Separate tags with spaces. (<%= link_to "help", {:controller => "help", :action => "tags"}, :target => "_blank" %>)</p>
               <% end %>
             </th>
             <td>
-              <%= text_area "post", "tags", :size => "60x4", :tabindex => 3 %>
+              <%= text_area "post", "tags", :size => "60x4", :tabindex => 4 %>
               <%= link_to_function "Related tags", "RelatedTags.find('post_tags')" %> | 
               <%= link_to_function "Related artists", "RelatedTags.find('post_tags', 'artist')" %> |
               <%= link_to_function "Related characters", "RelatedTags.find('post_tags', 'char')" %> |
@@ -100,8 +111,19 @@
             </td>
           </tr>
           <tr>
+            <th>
+              <label for="post_description">Description</label>
+              <% unless @current_user.is_privileged_or_higher? %>
+                <p>Enter a brief description (or copy it from the source)</p>
+              <% end %>
+            </th>
+            <td>
+              <%= text_area "post", "description", :size => "60x4", :tabindex => 5 %>
+            </td>
+          </tr>
+          <tr>
             <th><label for="post_parent_id">Parent</label></th>
-            <td><%= text_field "post", "parent_id", :size => 5, :tabindex => 4 %></td>
+            <td><%= text_field "post", "parent_id", :size => 5, :tabindex => 6 %></td>
           </tr>
           <tr>
             <th>
@@ -111,13 +133,13 @@
               <% end %>
             </th>
             <td>
-              <input id="post_rating_explicit" name="post[rating]" type="radio" value="Explicit" tabindex="5">
+              <input id="post_rating_explicit" name="post[rating]" type="radio" value="Explicit" tabindex="7">
               <label for="post_rating_explicit">Explicit</label>
 
-              <input id="post_rating_questionable" name="post[rating]" type="radio" value="Questionable" checked="checked" tabindex="6">
+              <input id="post_rating_questionable" name="post[rating]" type="radio" value="Questionable" checked="checked" tabindex="8">
               <label for="post_rating_questionable">Questionable</label>
 
-              <input id="post_rating_safe" name="post[rating]" type="radio" value="Safe" tabindex="7">
+              <input id="post_rating_safe" name="post[rating]" type="radio" value="Safe" tabindex="9">
               <label for="post_rating_safe">Safe</label>
             </td>
           </tr>

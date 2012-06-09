@@ -90,6 +90,7 @@ module PostMethods
           cond_params << q[:status]
         else
           conds << "p.status <> 'deleted'"
+          conds << "p.status <> 'hidden'"
         end
 
         unless options[:include_pool]
@@ -282,8 +283,8 @@ module PostMethods
         	when "filesize_asc"
         	  sql << " ORDER BY p.file_size ASC"
 
-          else
-            sql << " ORDER BY p.id DESC"
+          else # replace p.id with p.bumped_at
+            sql << " ORDER BY p.bumped_at DESC"
           end
         end
 

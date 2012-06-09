@@ -181,13 +181,15 @@ module PostMethods
         self.cached_tags = select_value_sql("SELECT cached_tags FROM posts WHERE id = #{id}")
 
         PostTagHistory.create(
+          :title => title,
           :post_id => id, 
           :rating => rating, 
           :tags => cached_tags, 
           :user_id => updater_user_id, 
           :ip_addr => updater_ip_addr,
           :parent_id => parent_id,
-          :source => source
+          :source => source,
+          :description => description
         )
         self.new_tags = nil
         

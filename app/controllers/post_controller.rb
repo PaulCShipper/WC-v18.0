@@ -81,40 +81,64 @@ public
       p.update_attributes(update)
 
       respond_to_error("Post already exists", {:controller => "post", :action => "show", :id => p.id, :tag_title => @post.tag_title}, :api => {:location => url_for(:controller => "post", :action => "show", :id => p.id)}, :status => 423)
+=begin
     elsif @post.errors.invalid?(:pixiv)
-      ppool = pixiv_pool(params[:post], status)
+      # pixiv loop
+      ppool = pixiv_pool_control(@post)
       if ppool
         @post = Post.find(ppool)
         respond_to_success("Post uploaded", {:controller => "post", :action => "show", :id => @post.id, :tag_title => @post.tag_title}, :api => {:post_id => @post.id, :location => url_for(:controller => "post", :action => "show", :id => @post.id)})
       else
-        respond_to_error("still trying", :action => "error")
+        #respond_to_error("still trying", :action => "error")
+        respond_to_error(@post, :action => "error")
       end
+=end
     else
       respond_to_error(@post, :action => "error")
     end
   end
 
-  # mess with this some more
-  def pixiv_pool(post, status)
-    ext = post[:source][/\.[^\.]+$/]
-    base = post[:source].sub(/\.[^\.]+$/, "_big_p")
+  # mess with this some more, move this to task.
+  def pixiv_pool_control(post)
+    ext = post.source[/\.[^\.]+$/]
+    base = post.source.sub(/\.[^\.]+$/, "_big_p")
     num = 0
     post_id = nil
 
     begin
       post_id = @post.id
       alt_source = base + num.to_s + ext
-      @post = Post.new(params[:post].merge(:updater_user_id => @current_user.id, :updater_ip_addr => request.remote_ip))
-      @post.user_id = @current_user.id
-      @post.status = status
-      @post.ip_addr = request.remote_ip
+      @post = post.clone
+      @post.updater_user_id = post.user_id
+      @post.updater_ip_addr = post.ip_addr
       @post.source = alt_source
+      @post.new_tags = post.new_tags
       @post.save
       num += 1
     end until(@post.errors.invalid?(:source) or !@current_user.can_upload?)
     post_id
   end
 
+  def pixiv_gallery
+    # get cookie or log into pixiv
+    # create mechanize and add it to pixiv
+
+    gallery = pixiv.get source
+    url = URI.parse source
+    alt_source = url.request_uri[1..-1] + "&p="
+    num = 2
+
+    while gallery.link_with(:href => alt_source + num.to_s)
+      gallery.links_with(:href => /mode=medium&illust_id/).each do |link|
+        puts link.href
+        # post save with source "http://www.pixiv.net/" + link.href
+        # if don't save, use pixiv_pool
+      end
+
+      gallery = pixiv.click(gallery.link_with(:href => alt_source + num.to_s))
+      num += 1
+    end
+  end
 
   def moderate
     if request.post?

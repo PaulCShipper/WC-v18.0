@@ -2,7 +2,11 @@ module PostMethods
   # These are methods dealing with getting the image and generating the thumbnail.
   # It works in conjunction with the image_store methods. Since these methods have 
   # to be called in a specific order, they've been bundled into one module.
+
   module FileMethods
+    # to switch the source
+    attr_accessor :original_source
+
     def self.included(m)
       m.before_validation_on_create :download_source
       m.before_validation_on_create :ensure_tempfile_exists
@@ -13,13 +17,48 @@ module PostMethods
       m.before_validation_on_create :generate_sample
       m.before_validation_on_create :generate_preview
       m.before_validation_on_create :move_file
+      m.before_validation_on_create :change_source
       # m.before_validation_on_create :distribute_file # <- to allow uploading
     end
 
+    def change_source
+      self.source = original_source if original_source
+    end
+
+    def from_danbooru
+      mech = Mechanize.new
+
+      page = mech.get source
+      form = page.form_with :action => %r#/post/update/#
+      self.tags = form.field_with(:name => /post\[old_tags\]/).value
+      self.description = form.field_with(:name => /post\[description\]/).value if form.field_with(:name => /post\[description\]/)
+      self.title = form.field_with(:name => /post\[title\]/).value if form.field_with(:name => /post\[title\]/)
+
+      # incase there's no source
+      tmp_source = form.field_with(:name => /post\[source\]/).value
+
+      if tmp_source[/\w/] then self.original_source = tmp_source
+      else self.original_source = source end
+
+      self.source = page.link_with(:href => %r#/data/#).href
+
+      return false unless source
+    end
+
     # to check different extensions.  [jpg, jpeg, gif, and png], 4 in all
-    def change_ext(num)
-      pic_end = [".jpg", ".jpeg", ".gif", ".png"]
-      self.source.sub!(/\.[^\.]+$/, pic_end[num])
+    def change_ext
+      pic_ext =  %w{.jpg .jpeg .gif .png}
+      pic_ext.delete file_ext
+
+      pic_ext.each do |new_ext|
+        alt_source = source.sub(/\.[^\.]+$/, new_ext)
+        if Danbooru.http_ping(alt_source) == "404"
+          self.source = alt_source
+          return true
+        end
+      end
+
+      return false
     end
 
     def distribute_file
@@ -126,19 +165,45 @@ module PostMethods
       return if source !~ /^http:\/\// || !file_ext.blank?
 
       ##################################################################
-      # below are the custom changes to upload from different websites #
+      # below are the custom changes to upload for different websites  #
+      # this should be in the local_config.rb                          #
+      #                                                                #
+      # there should be a check to see if there 'is' an extension,     #
+      # if there isn't, that means it's using a website page           #
       ##################################################################
 
-      # for pixiv pictures, fix this.
+      # for pixiv pictures, fix this. #####################################
+
+      pixiv_stuff = true
+      if source =~ %r(http://www\.pixiv\.net/member_illust\.php\?mode=medium&illust_id=\d+)
+        self.original_source = source
+        pixiv_stuff = pixiv_download
+      end
+
+      unless pixiv_stuff
+        logger.info("----------- final error and hope to return")
+        errors.add :pixiv_pool, "pool is finish"
+        return false
+      end
+
       if source =~ /pixiv\.net\/img\//
         if source =~/(_m|_s)\.[^\.]+$/
           ext_end = source[/\.[^\.]+$/]
           source.sub!(/(_s|_m)\.[^\.]+$/, ext_end)
         end
 
-        if source =~ /_p(\d)+\.[^\.]+$/ and !source[/_big_p(\d)+/]
-          ext_end = source[/_p(\d)+\.[^\.]+$/]
-          source.sub!(/_p(\d)+\.[^\.]+$/, "_big" + ext_end)
+        # Pawsie - right here is the error 
+        if source[/_big_p/]
+          test = Danbooru.http_ping(source)
+          if test == "404"
+            source.gsub!(/_big_p/, "_p")
+            test = Danbooru.http_ping(source)
+            if test == "404"
+              logger.info("----------- final error and hope to return")
+              errors.add :pixiv_pool, "pool is finish"
+              return false
+            end
+          end
         end
       end
 
@@ -150,6 +215,18 @@ module PostMethods
       # for DeviantArt.net
       if source =~ /deviantart\.net/ and source =~ /\/(150|PRE)\//
         source.sub!(/\/(150|PRE)\//,"/")
+      end
+
+      #######
+      # end #
+      #######
+
+      #######################################
+      # this is for the danbooru downloader #
+      #######################################
+
+      if source =~ %r#/post/show/\d+#
+        from_danbooru
       end
 
       #######
@@ -174,21 +251,23 @@ module PostMethods
         if source.to_s =~ /\/src\/\d{12,}|urnc\.yi\.org|yui\.cynthia\.bne\.jp/
           self.source = "Image board"
         end
-      
+        
         return true
       rescue SocketError, URI::Error, SystemCallError => x
         delete_tempfile
 
         # try changing the ext
-        if num_ext < 4
-          change_ext(num_ext)
-          num_ext += 1
-          retry
-        end
+        if change_ext then retry end
 
-        errors.add("pixiv", "retrying in of a pixiv pool") if source =~ /pixiv\.net\/img\// and !source[/_big_p[\d]+\.[^\.]+$/]
         errors.add "source", "couldn't be opened: #{x}"
         return false
+=begin
+      rescue PostMethods::PixivPost::PixivFinish
+        delete_tempfile
+ 
+        errors.add "pixiv_pool", "couldn't be opened"
+        return false
+=end
       end
     end
   
@@ -376,6 +455,11 @@ module PostMethods
   
     def sample_percentage
       100 * get_sample_width.to_f / width
+    end
+
+    # test for browser
+    def self.create_mechanize
+      
     end
   end
 end

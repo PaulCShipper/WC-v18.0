@@ -1,0 +1,16 @@
+--- 
+pixiv.net: 
+  /: 
+    PHPSESSID: !ruby/object:Mechanize::Cookie 
+      comment: 
+      comment_url: 
+      discard: 
+      domain: pixiv.net
+      expires: Sun, 08 Jul 2012 13:38:47 GMT
+      max_age: 
+      name: PHPSESSID
+      path: /
+      port: 
+      secure: false
+      value: 64c1f06d47191a2136eddafe0d341bc7
+      version: 0

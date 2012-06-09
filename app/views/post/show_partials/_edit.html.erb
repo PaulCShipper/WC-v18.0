@@ -59,7 +59,7 @@
               <% end %>
             </th>
             <td>
-              <%= text_area "post", "tags", :disabled => !@post.can_be_seen_by?(@current_user), :size => "50x4", :value => @post.cached_tags, :tabindex => 10 %>
+              <%= text_area "post", "tags", :disabled => !@post.can_be_seen_by?(@current_user), :size => "50x7", :value => @post.cached_tags, :tabindex => 10 %>
             <% if @post.can_be_seen_by?(@current_user) %>
               <%= link_to_function "Related tags", "RelatedTags.find('post_tags')" %> | 
               <%= link_to_function "Related artists", "RelatedTags.find('post_tags', 'artist')" %> |
@@ -67,6 +67,17 @@
               <%= link_to_function "Related copyrights", "RelatedTags.find('post_tags', 'copyright')" %> |
               <%= link_to_function("Find artist", "RelatedTags.find_artist($F('post_source'))") %>
             <% end %>
+            </td>
+          </tr>
+          <tr>
+            <th>
+              <label class="block" for="post_tags">Description</label>
+                          <% unless @current_user.is_privileged_or_higher? %>
+                                <p>Not required</p>
+                          <% end %>
+            </th>
+            <td>
+              <%= text_area "post", "description", :disabled => !@post.can_be_seen_by?(@current_user), :size => "50x7", :value => @post.description, :tabindex => 12 %>
             </td>
           </tr>
       </tbody>

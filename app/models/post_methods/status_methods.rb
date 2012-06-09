@@ -2,6 +2,12 @@ module PostMethods
   module StatusMethods
     def delete!
       give_favorites_to_parent
+
+      # my edit
+      update_attribute(:bumped_at, created_at)
+      first_history = PostTagHistory.first :conditions => ["post_id = ?", id]
+      update_attribute(:user_id, first_history.user_id)
+
       update_attribute(:status, "deleted")
       Post.update_has_children(parent_id) if parent_id
       flag_detail.update_attributes(:is_resolved => true) if flag_detail

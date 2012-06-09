@@ -1,12 +1,12 @@
 class Post < ActiveRecord::Base
-  STATUSES = %w(active pending flagged deleted untagged)
+  STATUSES = %w(active pending flagged deleted hidden untagged)
   
   has_many :notes, :order => "id desc"
   has_and_belongs_to_many :pools
   has_one :flag_detail, :class_name => "FlaggedPostDetail"
   belongs_to :user
   belongs_to :approver, :class_name => "User"
-  attr_accessor :updater_ip_addr, :updater_user_id
+  attr_accessor :updater_ip_addr, :updater_user_id, :post_mechanize
   attr_protected :user_id, :score, :md5, :width, :height, :cached_tags, :fav_count, :file_ext, :has_children, :status, :sample_width, :sample_height, :change_seq, :approver_id, :tags_index, :ip_addr
   
   include PostMethods::SqlMethods
@@ -26,6 +26,7 @@ class Post < ActiveRecord::Base
   include PostMethods::DeletionMethods
   include PostMethods::FlagMethods
   include PostMethods::PoolMethods
+  include PostMethods::PixivPost
   
   # TODO: refactor or eliminate
   def favorited_by
